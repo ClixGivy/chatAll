@@ -209,6 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const dz = document.getElementById("dropZone");
   const msgInput = document.getElementById("msgInput");
   
+  const enterChatBtn = document.getElementById("enterChatBtn");
+  enterChatBtn.addEventListener("click", window.setName);
+
   // Drag & Drop
   dz.addEventListener("dragover", (e) => {
     e.preventDefault();
