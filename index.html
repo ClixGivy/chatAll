@@ -592,17 +592,22 @@
 
     // Attente pseudo
     window.setName = async () => {
-      username = document.getElementById("nameInput").value.trim();
-      if (!username) return alert("Choisis un pseudo !");
-      if (username.length > 20) return alert("Le pseudo doit faire moins de 20 caractères !");
-      
-      document.getElementById("login").style.display = "none";
-      document.getElementById("chatUI").style.display = "flex";
-      document.getElementById("chatHeader").textContent = `💬 Chat - Connecté en tant que ${username}`;
-      
-      await setUserOnline();
-      loadChat();
-      listenToUsers();
+      try {
+        username = document.getElementById("nameInput").value.trim();
+        if (!username) return alert("Choisis un pseudo !");
+        if (username.length > 20) return alert("Le pseudo doit faire moins de 20 caractères !");
+        
+        document.getElementById("login").style.display = "none";
+        document.getElementById("chatUI").style.display = "flex";
+        document.getElementById("chatHeader").textContent = `💬 Chat - Connecté en tant que ${username}`;
+        
+        await setUserOnline();
+        loadChat();
+        listenToUsers();
+      } catch (error) {
+        console.error("Erreur lors de la connexion:", error);
+        alert("Erreur de connexion, réessaye !");
+      }
     };
 
     // Charger chat
@@ -766,7 +771,7 @@
       // Enter sur le pseudo
       document.getElementById("nameInput").addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-          setName();
+          window.setName();
         }
       });
       
@@ -792,7 +797,7 @@
       <h2>Bienvenue 👋</h2>
       <p>Choisis un pseudo pour entrer dans le chat :</p>
       <input id="nameInput" placeholder="Ton pseudo" maxlength="20" />
-      <button onclick="setName()">Entrer dans le Chat</button>
+      <button onclick="window.setName()">Entrer dans le Chat</button>
     </div>
 
     <div id="chatUI" style="display:none;">
