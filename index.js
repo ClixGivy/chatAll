@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-
 //Ma conf firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAuC0XnkI_KjbpklmuAha1eO6D4a2fjr2I",
@@ -20,12 +19,13 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 let username = null;
 let userId = null;
+
 // Générer un ID unique pour l'utilisateur
 function generateUserId() {
-  return Date.now().
-  toString(36) + Math.random().toString(36).substr(2);
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
+// Auto-resize du textarea
 function autoResize(textarea) {
   textarea.style.height = 'auto';
   textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
@@ -41,11 +41,11 @@ async function setUserOnline() {
   });
   
   // Nettoyer à la déconnexion
-    window.addEventListener('unload', async () => {
+  window.addEventListener('unload', async () => {
     await deleteDoc(doc(db, "users", userId));
-    });
-
+  });
 }
+
 // Écouter les utilisateurs connectés
 function listenToUsers() {
   const q = query(collection(db, "users"));
@@ -74,6 +74,7 @@ function listenToUsers() {
     onlineCount.textContent = `${count} utilisateur${count > 1 ? 's' : ''} en ligne`;
   });
 }
+
 // Attente pseudo
 window.setName = async () => {
   try {
@@ -94,7 +95,7 @@ window.setName = async () => {
   }
 };
 
-// Charger chat
+// Charger chat avec scroll intelligent
 function loadChat() {
   const q = query(collection(db, "messages"), orderBy("time"));
   onSnapshot(q, (snapshot) => {
@@ -118,7 +119,7 @@ function loadChat() {
       chat.appendChild(div);
     });
     
-    // Scroll intelligent
+    // Scroll intelligent : seulement si on était proche du bas
     if (wasAtBottom || chat.children.length === 1) {
       setTimeout(() => {
         chat.scrollTop = chat.scrollHeight;
@@ -134,10 +135,12 @@ window.showImageModal = (imageUrl) => {
   modalImage.src = imageUrl;
   modal.style.display = "block";
 };
+
 // Fermer modal
 window.closeImageModal = () => {
   document.getElementById("imageModal").style.display = "none";
 };
+
 // Envoyer texte
 window.sendMessage = async () => {
   const input = document.getElementById("msgInput");
@@ -150,6 +153,7 @@ window.sendMessage = async () => {
     time: Date.now()
   });
   input.value = "";
+  autoResize(input);
 };
 
 // Upload fichier (image)
@@ -199,7 +203,8 @@ window.sendImage = async (file) => {
     console.error(error);
   }
 };
-// Coller des images depuis le presse-papier
+
+// Coller des images depuis le presse-papier (RÉPARÉ)
 async function handlePaste(e) {
   const items = e.clipboardData?.items;
   if (!items) return;
@@ -217,19 +222,18 @@ async function handlePaste(e) {
     }
   }
 }
+
 // Setup des événements
 document.addEventListener("DOMContentLoaded", () => {
   const dz = document.getElementById("dropZone");
   const msgInput = document.getElementById("msgInput");
-  
   const enterChatBtn = document.getElementById("enterChatBtn");
+  
   enterChatBtn.addEventListener("click", window.setName);
+
+  // Auto-resize du textarea
   msgInput.addEventListener('input', function() {
     autoResize(this);
-  });
-
-  document.getElementById("modalImage").addEventListener("click", (e) => {
-    e.stopPropagation();
   });
 
   // Drag & Drop
@@ -265,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   
-  // Paste d'images
+  // Gestion du collage améliorée
   msgInput.addEventListener("paste", handlePaste);
   document.addEventListener("paste", handlePaste);
   
@@ -278,7 +282,13 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Modal image
   document.getElementById("imageModal").addEventListener("click", closeImageModal);
+
+  // Empêcher la fermeture de l'image modale en cliquant sur l'image elle-même
+  document.getElementById("modalImage").addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
 });
+
 // Nettoyage à la fermeture
 window.addEventListener('beforeunload', async () => {
   if (userId) {

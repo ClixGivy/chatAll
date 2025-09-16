@@ -1,5 +1,7 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -28,10 +30,10 @@ body {
 }
 
 #login, #chatUI {
-  padding: 30px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 #login {
@@ -39,6 +41,7 @@ body {
   align-items: center;
   text-align: center;
   background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+  padding: 30px;
 }
 
 #login h2 {
@@ -115,12 +118,14 @@ button:active {
   font-weight: 600;
   font-size: 1.2rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
 }
 
 #mainContent {
   flex: 1;
   display: flex;
   min-height: 0;
+  overflow: hidden;
 }
 
 #chatArea {
@@ -128,6 +133,7 @@ button:active {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
 }
 
 #chat {
@@ -149,12 +155,12 @@ button:active {
 
 #chat::-webkit-scrollbar-track {
   background: rgba(255,255,255,0.1);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 #chat::-webkit-scrollbar-thumb {
   background: linear-gradient(45deg, #667eea, #764ba2);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 #chat::-webkit-scrollbar-thumb:hover {
@@ -166,11 +172,13 @@ button:active {
   padding: 15px 20px;
   border-radius: 18px;
   word-wrap: break-word;
+  word-break: break-word;
   background: rgba(46, 46, 79, 0.8);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.1);
   animation: fadeInUp 0.3s ease;
   position: relative;
+  flex-shrink: 0;
 }
 
 .msg.own {
@@ -225,7 +233,7 @@ button:active {
   color: rgba(255,255,255,0.9);
 }
 
-img {
+.msg img {
   max-width: 100%;
   max-height: 300px;
   border-radius: 12px;
@@ -234,9 +242,10 @@ img {
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   cursor: pointer;
   transition: transform 0.2s ease;
+  display: block;
 }
 
-img:hover {
+.msg img:hover {
   transform: scale(1.05);
 }
 
@@ -244,16 +253,15 @@ img:hover {
   padding: 20px 30px;
   background: rgba(0,0,0,0.2);
   border-top: 1px solid rgba(255,255,255,0.1);
-  position: sticky;
-  bottom: 0;
   backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 #inputArea {
   display: flex;
   gap: 15px;
   margin-bottom: 15px;
-  align-items: center;
+  align-items: flex-end;
 }
 
 #msgInput {
@@ -329,6 +337,7 @@ img:hover {
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(10px);
+  overflow: hidden;
 }
 
 #usersSidebar h3 {
@@ -338,6 +347,7 @@ img:hover {
   text-align: center;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
 }
 
 #usersList {
@@ -346,6 +356,19 @@ img:hover {
   overflow-x: hidden;
 }
 
+#usersList::-webkit-scrollbar {
+  width: 6px;
+}
+
+#usersList::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+#usersList::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-radius: 3px;
+}
 
 .user-item {
   display: flex;
@@ -356,6 +379,7 @@ img:hover {
   background: rgba(255,255,255,0.1);
   transition: all 0.2s ease;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .user-item:hover {
@@ -374,6 +398,9 @@ img:hover {
 .user-name {
   flex: 1;
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-item.own {
@@ -388,6 +415,7 @@ img:hover {
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
 }
 
 /* Modal pour les images */
@@ -413,6 +441,13 @@ img:hover {
   border-radius: 12px;
 }
 
+.paste-info {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  margin-top: 5px;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   #usersSidebar {
@@ -421,29 +456,6 @@ img:hover {
 }
 
 @media (max-width: 768px) {
-  body {
-    padding: 5px;
-  }
-  
-  #container {
-    max-width: 100%;
-    height: 100vh;
-    min-height: 100vh;
-    border-radius: 0;
-  }
-  
-  #login, #chatUI {
-    padding: 20px;
-  }
-  
-  #login input {
-    width: 250px;
-  }
-  
-  #login h2 {
-    font-size: 2rem;
-  }
-  
   #mainContent {
     flex-direction: column;
   }
@@ -457,23 +469,10 @@ img:hover {
   }
   
   #usersList {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  #usersList::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  #usersList::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.1);
-    border-radius: 3px;
-  }
-
-  #usersList::-webkit-scrollbar-thumb {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    border-radius: 3px;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 10px;
   }
   
   .user-item {
@@ -519,11 +518,4 @@ img:hover {
     font-size: 1rem;
     margin-bottom: 15px;
   }
-}
-
-.paste-info {
-  font-size: 12px;
-  color: rgba(255,255,255,0.6);
-  text-align: center;
-  margin-top: 5px;
 }
