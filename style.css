@@ -7,25 +7,24 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
   margin: 0;
+  padding: 0;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   color: #fff;
-  padding: 10px;
+  overflow: hidden;
 }
 
 #container {
-  width: 100%;
-  max-width: 1200px;
+  width: 100vw;
+  height: 100vh;
   background: rgba(30, 30, 47, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 90vh;
-  min-height: 700px;
 }
 
 #login, #chatUI {
@@ -134,16 +133,18 @@ button:active {
 #chat {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px 30px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   background: rgba(0,0,0,0.1);
   min-height: 0;
+  scroll-behavior: smooth;
 }
 
 #chat::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 #chat::-webkit-scrollbar-track {
@@ -154,6 +155,10 @@ button:active {
 #chat::-webkit-scrollbar-thumb {
   background: linear-gradient(45deg, #667eea, #764ba2);
   border-radius: 3px;
+}
+
+#chat::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #5a6fd8, #6a4c93);
 }
 
 .msg {
@@ -265,6 +270,7 @@ img:hover {
   min-height: 50px;
   max-height: 120px;
   overflow-y: auto;
+  font-family: inherit;
 }
 
 #msgInput:focus {
@@ -337,7 +343,9 @@ img:hover {
 #usersList {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
+
 
 .user-item {
   display: flex;
@@ -449,10 +457,23 @@ img:hover {
   }
   
   #usersList {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #usersList::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #usersList::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+  }
+
+  #usersList::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 3px;
   }
   
   .user-item {

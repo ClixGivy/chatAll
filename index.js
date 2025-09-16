@@ -22,8 +22,15 @@ let username = null;
 let userId = null;
 // Générer un ID unique pour l'utilisateur
 function generateUserId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  return Date.now().
+  toString(36) + Math.random().toString(36).substr(2);
 }
+
+function autoResize(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+}
+
 // Gérer la présence utilisateur
 async function setUserOnline() {
   userId = generateUserId();
@@ -86,12 +93,13 @@ window.setName = async () => {
     alert("Erreur de connexion, réessaye !");
   }
 };
+
 // Charger chat
 function loadChat() {
   const q = query(collection(db, "messages"), orderBy("time"));
   onSnapshot(q, (snapshot) => {
     const chat = document.getElementById("chat");
-    const wasScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
+    const wasAtBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 50;
     
     chat.innerHTML = "";
     snapshot.forEach((doc) => {
@@ -110,12 +118,15 @@ function loadChat() {
       chat.appendChild(div);
     });
     
-    // Scroll automatique seulement si on était en bas
-    if (wasScrolledToBottom) {
-      chat.scrollTop = chat.scrollHeight;
+    // Scroll intelligent
+    if (wasAtBottom || chat.children.length === 1) {
+      setTimeout(() => {
+        chat.scrollTop = chat.scrollHeight;
+      }, 100);
     }
   });
 }
+
 // Modal pour agrandir les images
 window.showImageModal = (imageUrl) => {
   const modal = document.getElementById("imageModal");
@@ -193,11 +204,13 @@ async function handlePaste(e) {
   const items = e.clipboardData?.items;
   if (!items) return;
   
-  for (let item of items) {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
     if (item.type.startsWith('image/')) {
       e.preventDefault();
       const file = item.getAsFile();
       if (file) {
+        console.log('Image collée détectée:', file.type, file.size);
         await sendImage(file);
       }
       break;
@@ -211,6 +224,13 @@ document.addEventListener("DOMContentLoaded", () => {
   
   const enterChatBtn = document.getElementById("enterChatBtn");
   enterChatBtn.addEventListener("click", window.setName);
+  msgInput.addEventListener('input', function() {
+    autoResize(this);
+  });
+
+  document.getElementById("modalImage").addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
 
   // Drag & Drop
   dz.addEventListener("dragover", (e) => {
