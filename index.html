@@ -6,12 +6,17 @@
   <title>Donntou</title>
   <link rel="stylesheet" href="style.css">
   <script src="index.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+
 </head>
 <body>
   <div id="container">
     <div id="login">
       <h2>Bienvenue 👋</h2>
       <p>Choisis un pseudo pour entrer dans le chat :</p>
+      <p style="font-size: 6px;">Et donne moi toutes les réponses</p>
       <input id="nameInput" placeholder="Ton pseudo" maxlength="20" />
       <button onclick="window.setName()">Entrer dans le Chat</button>
     </div>

@@ -34,9 +34,10 @@ async function setUserOnline() {
   });
   
   // Nettoyer à la déconnexion
-  window.addEventListener('beforeunload', async () => {
+    window.addEventListener('unload', async () => {
     await deleteDoc(doc(db, "users", userId));
-  });
+    });
+
 }
 // Écouter les utilisateurs connectés
 function listenToUsers() {
@@ -139,12 +140,21 @@ window.sendMessage = async () => {
   });
   input.value = "";
 };
+
 // Upload fichier (image)
 async function uploadFile(file) {
   const storageRef = ref(storage, "images/" + Date.now() + "_" + file.name);
-  await uploadBytes(storageRef, file);
-  return await getDownloadURL(storageRef);
+  try {
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    console.log("Image téléchargée, URL: ", url);
+    return url;
+  } catch (error) {
+    console.error("Erreur upload fichier:", error);
+    throw error;
+  }
 }
+
 // Envoyer image
 window.sendImage = async (file) => {
   if (!file) return;
