@@ -23,7 +23,7 @@
     
     #container {
       width: 100%;
-      max-width: 900px;
+      max-width: 1200px;
       background: rgba(30, 30, 47, 0.95);
       backdrop-filter: blur(20px);
       border-radius: 20px;
@@ -31,8 +31,8 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      height: 85vh;
-      min-height: 600px;
+      height: 90vh;
+      min-height: 700px;
     }
     
     #login, #chatUI {
@@ -125,6 +125,19 @@
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     
+    #mainContent {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+    
+    #chatArea {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    
     #chat {
       flex: 1;
       overflow-y: auto;
@@ -133,6 +146,7 @@
       flex-direction: column;
       gap: 15px;
       background: rgba(0,0,0,0.1);
+      min-height: 0;
     }
     
     #chat::-webkit-scrollbar {
@@ -220,18 +234,28 @@
       margin-top: 8px;
       object-fit: cover;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    img:hover {
+      transform: scale(1.05);
     }
     
     #inputContainer {
       padding: 20px 30px;
       background: rgba(0,0,0,0.2);
       border-top: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      bottom: 0;
+      backdrop-filter: blur(10px);
     }
     
     #inputArea {
       display: flex;
       gap: 15px;
       margin-bottom: 15px;
+      align-items: center;
     }
     
     #msgInput {
@@ -244,6 +268,10 @@
       font-size: 16px;
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
+      resize: none;
+      min-height: 50px;
+      max-height: 120px;
+      overflow-y: auto;
     }
     
     #msgInput:focus {
@@ -266,6 +294,7 @@
       align-items: center;
       justify-content: center;
       font-size: 20px;
+      flex-shrink: 0;
     }
     
     #dropZone {
@@ -278,7 +307,7 @@
       transition: all 0.3s ease;
       background: rgba(102,126,234,0.1);
       cursor: pointer;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     
     #dropZone.dragover {
@@ -289,25 +318,107 @@
     }
     
     #imgInput {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.1);
-      color: #fff;
+      display: none;
     }
     
-    #imgInput::file-selector-button {
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
+    /* Sidebar utilisateurs */
+    #usersSidebar {
+      width: 250px;
+      background: rgba(0,0,0,0.2);
+      border-left: 1px solid rgba(255,255,255,0.1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+    }
+    
+    #usersSidebar h3 {
+      margin: 0 0 20px 0;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.9);
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    #usersList {
+      flex: 1;
+      overflow-y: auto;
+    }
+    
+    .user-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+    
+    .user-item:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .user-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4CAF50;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    
+    .user-name {
+      flex: 1;
+      font-weight: 500;
+    }
+    
+    .user-item.own {
+      background: rgba(102,126,234,0.3);
+      border: 1px solid rgba(102,126,234,0.5);
+    }
+    
+    #onlineCount {
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Modal pour les images */
+    #imageModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
       cursor: pointer;
-      margin-right: 10px;
+    }
+    
+    #modalImage {
+      max-width: 90%;
+      max-height: 90%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 12px;
     }
     
     /* Responsive Design */
+    @media (max-width: 1024px) {
+      #usersSidebar {
+        width: 200px;
+      }
+    }
+    
     @media (max-width: 768px) {
       body {
         padding: 5px;
@@ -315,8 +426,9 @@
       
       #container {
         max-width: 100%;
-        height: 95vh;
-        border-radius: 15px;
+        height: 100vh;
+        min-height: 100vh;
+        border-radius: 0;
       }
       
       #login, #chatUI {
@@ -331,6 +443,31 @@
         font-size: 2rem;
       }
       
+      #mainContent {
+        flex-direction: column;
+      }
+      
+      #usersSidebar {
+        width: 100%;
+        height: 150px;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        order: 2;
+      }
+      
+      #usersList {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 10px;
+      }
+      
+      .user-item {
+        flex-shrink: 0;
+        margin-bottom: 0;
+        white-space: nowrap;
+      }
+      
       #chatHeader, #chat, #inputContainer {
         padding-left: 20px;
         padding-right: 20px;
@@ -342,16 +479,11 @@
       }
       
       #msgInput {
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 16px;
       }
     }
     
     @media (max-width: 480px) {
-      #container {
-        height: 100vh;
-        border-radius: 0;
-      }
-      
       #login input {
         width: 200px;
       }
@@ -363,17 +495,34 @@
       #inputArea {
         gap: 10px;
       }
+      
+      #usersSidebar {
+        height: 120px;
+        padding: 15px;
+      }
+      
+      #usersSidebar h3 {
+        font-size: 1rem;
+        margin-bottom: 15px;
+      }
+    }
+    
+    .paste-info {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      margin-top: 5px;
     }
   </style>
   <script type="module">
     // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } 
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, deleteDoc, onDisconnect } 
       from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } 
       from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // Config Firebase (remplace par la tienne)
+    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAuC0XnkI_KjbpklmuAha1eO6D4a2fjr2I",
       authDomain: "chat-fd8ca.firebaseapp.com",
@@ -390,15 +539,70 @@
     const storage = getStorage(app);
 
     let username = null;
+    let userId = null;
+
+    // Générer un ID unique pour l'utilisateur
+    function generateUserId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Gérer la présence utilisateur
+    async function setUserOnline() {
+      userId = generateUserId();
+      await setDoc(doc(db, "users", userId), {
+        name: username,
+        online: true,
+        lastSeen: Date.now()
+      });
+      
+      // Nettoyer à la déconnexion
+      window.addEventListener('beforeunload', async () => {
+        await deleteDoc(doc(db, "users", userId));
+      });
+    }
+
+    // Écouter les utilisateurs connectés
+    function listenToUsers() {
+      const q = query(collection(db, "users"));
+      onSnapshot(q, (snapshot) => {
+        const usersList = document.getElementById("usersList");
+        const onlineCount = document.getElementById("onlineCount");
+        
+        usersList.innerHTML = "";
+        let count = 0;
+        
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const userDiv = document.createElement("div");
+          userDiv.classList.add("user-item");
+          if (data.name === username) userDiv.classList.add("own");
+          
+          userDiv.innerHTML = `
+            <div class="user-status"></div>
+            <div class="user-name">${data.name}</div>
+          `;
+          
+          usersList.appendChild(userDiv);
+          count++;
+        });
+        
+        onlineCount.textContent = `${count} utilisateur${count > 1 ? 's' : ''} en ligne`;
+      });
+    }
 
     // Attente pseudo
-    window.setName = () => {
+    window.setName = async () => {
       username = document.getElementById("nameInput").value.trim();
       if (!username) return alert("Choisis un pseudo !");
+      if (username.length > 20) return alert("Le pseudo doit faire moins de 20 caractères !");
+      
       document.getElementById("login").style.display = "none";
       document.getElementById("chatUI").style.display = "flex";
       document.getElementById("chatHeader").textContent = `💬 Chat - Connecté en tant que ${username}`;
+      
+      await setUserOnline();
       loadChat();
+      listenToUsers();
     };
 
     // Charger chat
@@ -406,27 +610,51 @@
       const q = query(collection(db, "messages"), orderBy("time"));
       onSnapshot(q, (snapshot) => {
         const chat = document.getElementById("chat");
+        const wasScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
+        
         chat.innerHTML = "";
         snapshot.forEach((doc) => {
           const data = doc.data();
           const div = document.createElement("div");
           div.classList.add("msg");
           if (data.name === username) div.classList.add("own");
+          
           let content = `<span class="name">${data.name}</span>`;
           if (data.text) content += data.text;
-          if (data.imageUrl) content += `<br><img src="${data.imageUrl}" />`;
+          if (data.imageUrl) {
+            content += `<br><img src="${data.imageUrl}" onclick="showImageModal('${data.imageUrl}')" />`;
+          }
+          
           div.innerHTML = content;
           chat.appendChild(div);
         });
-        chat.scrollTop = chat.scrollHeight;
+        
+        // Scroll automatique seulement si on était en bas
+        if (wasScrolledToBottom) {
+          chat.scrollTop = chat.scrollHeight;
+        }
       });
     }
+
+    // Modal pour agrandir les images
+    window.showImageModal = (imageUrl) => {
+      const modal = document.getElementById("imageModal");
+      const modalImage = document.getElementById("modalImage");
+      modalImage.src = imageUrl;
+      modal.style.display = "block";
+    };
+
+    // Fermer modal
+    window.closeImageModal = () => {
+      document.getElementById("imageModal").style.display = "none";
+    };
 
     // Envoyer texte
     window.sendMessage = async () => {
       const input = document.getElementById("msgInput");
       const text = input.value.trim();
       if (!text) return;
+      
       await addDoc(collection(db, "messages"), {
         name: username,
         text: text,
@@ -444,14 +672,22 @@
 
     // Envoyer image
     window.sendImage = async (file) => {
-      if (!file || !file.type.startsWith('image/')) {
-        alert('Veuillez sélectionner une image valide');
+      if (!file) return;
+      
+      // Accepter tous les types d'images + formats courants
+      const allowedTypes = [
+        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 
+        'image/webp', 'image/bmp', 'image/svg+xml'
+      ];
+      
+      if (!allowedTypes.includes(file.type)) {
+        alert('Format non supporté. Utilisez: JPG, PNG, GIF, WebP, BMP, SVG');
         return;
       }
       
-      // Vérification de la taille (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('L\'image est trop lourde (max 5MB)');
+      // Vérification de la taille (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('L\'image est trop lourde (max 10MB)');
         return;
       }
       
@@ -468,17 +704,35 @@
       }
     };
 
-    // Drag & Drop setup
+    // Coller des images depuis le presse-papier
+    async function handlePaste(e) {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      
+      for (let item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            await sendImage(file);
+          }
+          break;
+        }
+      }
+    }
+
+    // Setup des événements
     document.addEventListener("DOMContentLoaded", () => {
       const dz = document.getElementById("dropZone");
+      const msgInput = document.getElementById("msgInput");
       
+      // Drag & Drop
       dz.addEventListener("dragover", (e) => {
         e.preventDefault();
         dz.classList.add("dragover");
       });
       
       dz.addEventListener("dragleave", (e) => {
-        // Only remove if we're actually leaving the drop zone
         if (!dz.contains(e.relatedTarget)) {
           dz.classList.remove("dragover");
         }
@@ -492,25 +746,43 @@
         }
       });
       
-      // Click to select file
+      // Click pour sélectionner fichier
       dz.addEventListener("click", () => {
         document.getElementById("imgInput").click();
       });
       
-      // Enter key to send message
-      document.getElementById("msgInput").addEventListener("keydown", (e) => {
+      // Enter pour envoyer message
+      msgInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           sendMessage();
         }
       });
       
-      // Enter key on name input
+      // Paste d'images
+      msgInput.addEventListener("paste", handlePaste);
+      document.addEventListener("paste", handlePaste);
+      
+      // Enter sur le pseudo
       document.getElementById("nameInput").addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           setName();
         }
       });
+      
+      // Modal image
+      document.getElementById("imageModal").addEventListener("click", closeImageModal);
+    });
+
+    // Nettoyage à la fermeture
+    window.addEventListener('beforeunload', async () => {
+      if (userId) {
+        try {
+          await deleteDoc(doc(db, "users", userId));
+        } catch (error) {
+          console.error("Erreur lors du nettoyage:", error);
+        }
+      }
     });
   </script>
 </head>
@@ -525,19 +797,34 @@
 
     <div id="chatUI" style="display:none;">
       <div id="chatHeader">💬 Chat</div>
-      <div id="chat"></div>
-      <div id="inputContainer">
-        <div id="inputArea">
-          <input id="msgInput" placeholder="Écris ton message..." />
-          <button onclick="sendMessage()" title="Envoyer">➤</button>
+      <div id="mainContent">
+        <div id="chatArea">
+          <div id="chat"></div>
+          <div id="inputContainer">
+            <div id="inputArea">
+              <input id="msgInput" placeholder="Écris ton message..." />
+              <button onclick="sendMessage()" title="Envoyer">➤</button>
+            </div>
+            <div id="dropZone" title="Cliquer, glisser-déposer ou coller (Ctrl+V) une image">
+              📷 Image: cliquer, glisser ou coller (Ctrl+V)
+            </div>
+            <div class="paste-info">💡 Tu peux coller des screenshots avec Ctrl+V</div>
+            <input type="file" id="imgInput" accept="image/*" 
+              onchange="sendImage(this.files[0])" />
+          </div>
         </div>
-        <div id="dropZone" title="Cliquer ou glisser-déposer une image">
-          📷 Cliquer ou glisser une image ici
+        <div id="usersSidebar">
+          <h3>👥 Utilisateurs</h3>
+          <div id="usersList"></div>
+          <div id="onlineCount">0 utilisateur en ligne</div>
         </div>
-        <input type="file" id="imgInput" accept="image/*" 
-          onchange="sendImage(this.files[0])" style="display: none;" />
       </div>
     </div>
+  </div>
+
+  <!-- Modal pour agrandir les images -->
+  <div id="imageModal" onclick="closeImageModal()">
+    <img id="modalImage" />
   </div>
 </body>
 </html>
