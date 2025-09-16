@@ -517,7 +517,7 @@
   <script type="module">
     // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, deleteDoc, onDisconnect } 
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, deleteDoc } 
       from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } 
       from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
@@ -527,11 +527,12 @@
       apiKey: "AIzaSyAuC0XnkI_KjbpklmuAha1eO6D4a2fjr2I",
       authDomain: "chat-fd8ca.firebaseapp.com",
       projectId: "chat-fd8ca",
-      storageBucket: "chat-fd8ca.firebasestorage.app",
+      storageBucket: "chat-fd8ca.appspot.com",   // ✅ corrigé
       messagingSenderId: "465383639643",
       appId: "1:465383639643:web:40b00502356239b6100d7e",
       measurementId: "G-G49NBE91DV"
     };
+
 
     // Init Firebase
     const app = initializeApp(firebaseConfig);
@@ -561,34 +562,34 @@
       });
     }
 
-    // // Écouter les utilisateurs connectés
-    // function listenToUsers() {
-    //   const q = query(collection(db, "users"));
-    //   onSnapshot(q, (snapshot) => {
-    //     const usersList = document.getElementById("usersList");
-    //     const onlineCount = document.getElementById("onlineCount");
+    // Écouter les utilisateurs connectés
+    function listenToUsers() {
+      const q = query(collection(db, "users"));
+      onSnapshot(q, (snapshot) => {
+        const usersList = document.getElementById("usersList");
+        const onlineCount = document.getElementById("onlineCount");
         
-    //     usersList.innerHTML = "";
-    //     let count = 0;
+        usersList.innerHTML = "";
+        let count = 0;
         
-    //     snapshot.forEach((doc) => {
-    //       const data = doc.data();
-    //       const userDiv = document.createElement("div");
-    //       userDiv.classList.add("user-item");
-    //       if (data.name === username) userDiv.classList.add("own");
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const userDiv = document.createElement("div");
+          userDiv.classList.add("user-item");
+          if (data.name === username) userDiv.classList.add("own");
           
-    //       userDiv.innerHTML = `
-    //         <div class="user-status"></div>
-    //         <div class="user-name">${data.name}</div>
-    //       `;
+          userDiv.innerHTML = `
+            <div class="user-status"></div>
+            <div class="user-name">${data.name}</div>
+          `;
           
-    //       usersList.appendChild(userDiv);
-    //       count++;
-    //     });
+          usersList.appendChild(userDiv);
+          count++;
+        });
         
-    //     onlineCount.textContent = `${count} utilisateur${count > 1 ? 's' : ''} en ligne`;
-    //   });
-    // }
+        onlineCount.textContent = `${count} utilisateur${count > 1 ? 's' : ''} en ligne`;
+      });
+    }
 
     // Attente pseudo
     window.setName = async () => {
