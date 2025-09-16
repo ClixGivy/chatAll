@@ -517,22 +517,19 @@
   <script type="module">
     // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, deleteDoc } 
-      from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } 
-      from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-
-    // Config Firebase
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    
+    //Ma conf firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAuC0XnkI_KjbpklmuAha1eO6D4a2fjr2I",
       authDomain: "chat-fd8ca.firebaseapp.com",
       projectId: "chat-fd8ca",
-      storageBucket: "chat-fd8ca.appspot.com",   // ✅ corrigé
+      storageBucket: "chat-fd8ca.firebasestorage.app",
       messagingSenderId: "465383639643",
       appId: "1:465383639643:web:40b00502356239b6100d7e",
       measurementId: "G-G49NBE91DV"
     };
-
 
     // Init Firebase
     const app = initializeApp(firebaseConfig);
