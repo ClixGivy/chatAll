@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -824,10 +824,203 @@
       </div>
     </div>
   </div>
-
-  <!-- Modal pour agrandir les images -->
   <div id="imageModal" onclick="closeImageModal()">
     <img id="modalImage" />
+  </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Firebase</title>
+  <style>
+    /* --- ton CSS, simplifié sans sidebar --- */
+    body {
+      font-family: "Inter", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg,#667eea,#764ba2,#f093fb);
+      color: #fff;
+    }
+    #container {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(30,30,47,0.95);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+    }
+    #login, #chatUI {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #login input, #msgInput {
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(45deg,#667eea,#764ba2);
+      color: #fff;
+      cursor: pointer;
+    }
+    #chatUI { display: none; }
+    #chatHeader {
+      background: linear-gradient(45deg,#667eea,#764ba2);
+      padding: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg {
+      padding: 10px 15px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.1);
+      max-width: 70%;
+    }
+    .msg.own { align-self: flex-end; background: #667eea; }
+    .name { font-weight: bold; font-size: 13px; display:block; margin-bottom:5px;}
+    #inputContainer {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0,0,0,0.2);
+    }
+    #msgInput { flex: 1; }
+  </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } 
+      from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } 
+      from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuC0XnkI_KjbpklmuAha1eO6D4a2fjr2I",
+      authDomain: "chat-fd8ca.firebaseapp.com",
+      projectId: "chat-fd8ca",
+      storageBucket: "chat-fd8ca.appspot.com",  // ✅ corrigé
+      messagingSenderId: "465383639643",
+      appId: "1:465383639643:web:40b00502356239b6100d7e",
+      measurementId: "G-G49NBE91DV"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    let username = null;
+
+    window.setName = () => {
+      username = document.getElementById("nameInput").value.trim();
+      if (!username) return alert("Choisis un pseudo !");
+      document.getElementById("login").style.display = "none";
+      document.getElementById("chatUI").style.display = "flex";
+      document.getElementById("chatHeader").textContent = `💬 Chat - ${username}`;
+      loadChat();
+    };
+
+    function loadChat() {
+      const q = query(collection(db,"messages"),orderBy("time"));
+      onSnapshot(q,(snapshot)=>{
+        const chat = document.getElementById("chat");
+        chat.innerHTML = "";
+        snapshot.forEach((doc)=>{
+          const d = doc.data();
+          const div = document.createElement("div");
+          div.classList.add("msg");
+          if (d.name === username) div.classList.add("own");
+          let html = `<span class="name">${d.name}</span>`;
+          if (d.text) html += d.text;
+          if (d.imageUrl) html += `<br><img src="${d.imageUrl}" style="max-width:200px;border-radius:8px"/>`;
+          div.innerHTML = html;
+          chat.appendChild(div);
+        });
+        chat.scrollTop = chat.scrollHeight;
+      });
+    }
+
+    window.sendMessage = async ()=>{
+      const input = document.getElementById("msgInput");
+      const text = input.value.trim();
+      if (!text) return;
+      await addDoc(collection(db,"messages"),{
+        name: username,
+        text,
+        time: Date.now()
+      });
+      input.value = "";
+    };
+
+    async function uploadFile(file) {
+      const storageRef = ref(storage,"images/"+Date.now()+"_"+file.name);
+      await uploadBytes(storageRef,file);
+      return await getDownloadURL(storageRef);
+    }
+
+    window.sendImage = async (file)=>{
+      if (!file) return;
+      if (file.size > 10*1024*1024) return alert("Image trop lourde (max 10MB)");
+      const url = await uploadFile(file);
+      await addDoc(collection(db,"messages"),{
+        name: username,
+        imageUrl: url,
+        time: Date.now()
+      });
+    };
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      document.getElementById("msgInput").addEventListener("keydown",(e)=>{
+        if (e.key==="Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div id="login">
+      <h2>Bienvenue 👋</h2>
+      <input id="nameInput" placeholder="Ton pseudo" maxlength="20"/>
+      <button onclick="setName()">Entrer</button>
+    </div>
+    <div id="chatUI">
+      <div id="chatHeader">💬 Chat</div>
+      <div id="chat"></div>
+      <div id="inputContainer">
+        <input id="msgInput" placeholder="Ton message..."/>
+        <button onclick="sendMessage()">➤</button>
+      </div>
+    </div>
   </div>
 </body>
 </html>
