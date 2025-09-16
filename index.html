@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat All avec Images</title>
+  <title>Ca triche Ca triche</title>
   <style>
     * {
       box-sizing: border-box;
@@ -561,34 +561,34 @@
       });
     }
 
-    // Écouter les utilisateurs connectés
-    function listenToUsers() {
-      const q = query(collection(db, "users"));
-      onSnapshot(q, (snapshot) => {
-        const usersList = document.getElementById("usersList");
-        const onlineCount = document.getElementById("onlineCount");
+    // // Écouter les utilisateurs connectés
+    // function listenToUsers() {
+    //   const q = query(collection(db, "users"));
+    //   onSnapshot(q, (snapshot) => {
+    //     const usersList = document.getElementById("usersList");
+    //     const onlineCount = document.getElementById("onlineCount");
         
-        usersList.innerHTML = "";
-        let count = 0;
+    //     usersList.innerHTML = "";
+    //     let count = 0;
         
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const userDiv = document.createElement("div");
-          userDiv.classList.add("user-item");
-          if (data.name === username) userDiv.classList.add("own");
+    //     snapshot.forEach((doc) => {
+    //       const data = doc.data();
+    //       const userDiv = document.createElement("div");
+    //       userDiv.classList.add("user-item");
+    //       if (data.name === username) userDiv.classList.add("own");
           
-          userDiv.innerHTML = `
-            <div class="user-status"></div>
-            <div class="user-name">${data.name}</div>
-          `;
+    //       userDiv.innerHTML = `
+    //         <div class="user-status"></div>
+    //         <div class="user-name">${data.name}</div>
+    //       `;
           
-          usersList.appendChild(userDiv);
-          count++;
-        });
+    //       usersList.appendChild(userDiv);
+    //       count++;
+    //     });
         
-        onlineCount.textContent = `${count} utilisateur${count > 1 ? 's' : ''} en ligne`;
-      });
-    }
+    //     onlineCount.textContent = `${count} utilisateur${count > 1 ? 's' : ''} en ligne`;
+    //   });
+    // }
 
     // Attente pseudo
     window.setName = async () => {
